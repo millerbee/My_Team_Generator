@@ -1,4 +1,4 @@
-// I really struggled trying to get this to write out to an html file... private tutor Austin Sanchez is helping me.
+
 
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
