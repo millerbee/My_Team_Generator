@@ -5,12 +5,26 @@ const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const fs = require("fs");
-const render = require("./render")
 const teamArr =[];
+const html =`<!DOCTYPE html>
+<html lang="en">
 
-const writeFileAsync = fs.writeFile
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>My Team</title>
+<body>
+<nav class="navbar navbar-light bg-warning text-lg-center">
+  <span class="navbar-brand mb-0 h1 text-lg-center">MY TEAM</span>
+</nav>
+    {Placeholder}
+    <script src="https://kit.fontawesome.com/71a24ccb38.js" crossorigin="anonymous"></script>
+</body>
+</html>`;
 
-//const generateHTML = require('./templates/manager.html')  this generates "SyntaxError: Unexpected token '<'"
+
+addEmp();
 
 //setting up prompt to ask for user input, using readme generator as guide.
 function addEmp() {
@@ -25,7 +39,7 @@ function addEmp() {
           getInfo();
         }else if (addMember === "no") {
           console.log("Ok, goodbye");
-          renderHTML();
+          generateHTML();
         }
       
     });
@@ -67,13 +81,8 @@ function addEmp() {
               name: "officeNumber"
 
             }
-          ]).then(function (name, id, email, role, officeNumber){
-            Manager = new Manager(name, id, email, role, officeNumber);
-            console.log(Manager);
-            teamArr.push(Manager);
-            addEmp();
-            renderHTML();
-          });
+          ]).then(answers => addManager(answers));
+         
 
         }else {
            if(data.role === "Engineer") {
@@ -100,13 +109,7 @@ function addEmp() {
                 message: "Enter Engineer's github username: ",
                 name: "github"
               }
-            ]).then(function (engineerData){
-              Engineer = new Engineer(engineerData.name, engineerData.email, engineerData.Id, engineerData.github);
-              teamArr.push(newEngineer);
-              addEmp();
-              renderHTML();
-            })
-
+            ]).then(answers => addEngineer(answers));
 
            }else {
              if(data.role === "Intern") {
@@ -133,13 +136,9 @@ function addEmp() {
                   message: "Enter Intern's school: ",
                   name: "school"
                 }
-               ]).then(function (internData){
-                Intern = new Intern(internData.name, internData.email, internData.Id, internData.github);
-                teamArr.push(newIntern);
-                addEmp();
-                renderHTML();
+               ]).then(answers => addIntern(answers));
                
-               })
+               
              }
            }
         }
@@ -150,22 +149,71 @@ function addEmp() {
       });
      
     }
-//  async function renderHTML(){
-//       console.log(teamArr)
 
-async function init() {      //(38-ins-async-await activity)
-  try {
-      // Ask questions
-      const data = await addEmp();
-      const generateFile = render(Manager);
-      // Write new README.md 
-        await writeFileAsync('team.txt', generateFile);
-    //    console.log('Successfully wrote to README.md');
-    }  catch(err) {
-      console.log(err);
-   }
+    function addManager(answers) {
+      const manager = `
+      <div class="card employee-card">
+    <div class="card-header">
+        <h2 class="card-title">${answers.managerName}</h2>
+        <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>{{ role }}</h3>
+    </div>
+    <div class="card-body">
+        <ul class="list-group">
+            <li class="list-group-item">ID: ${answers.id}</li>
+            <li class="list-group-item">Email: ${answers.email}</li>
+            <li class="list-group-item">Office number:${answers.officeNumber}</li>
+        </ul>
+    </div>
+</div>`
+      teamArr.push(manager)
+      addEmp();
+    }
+
+function addEngineer(answers) {
+  const engineer = `
+  <div class="card employee-card">
+  <div class="card-header">
+      <h2 class="card-title">${answers.engineerName}</h2>
+      <h3 class="card-title"><i class="fas fa-glasses mr-2"></i>{{ role }}</h3>
+  </div>
+  <div class="card-body">
+      <ul class="list-group">
+          <li class="list-group-item">ID:${answers.id}</li>
+          <li class="list-group-item">Email:${answers.email}</li>
+          <li class="list-group-item">GitHub: <a href="https://github.com/{{ github }}" target="_blank" rel="noopener noreferrer">${answers.github}</a></li>
+      </ul>
+  </div>
+</div>`
+      teamArr.push(engineer)
+      addEmp();
+
 }
     
 
+function addIntern(answers) {
+ const intern = `<div class="card employee-card">
+ <div class="card-header">
+     <h2 class="card-title">${answers.internName}</h2>
+     <h3 class="card-title"><i class="fas fa-user-graduate mr-2"></i>{{ role }}</h3>
+ </div>
+ <div class="card-body">
+     <ul class="list-group">
+         <li class="list-group-item">ID:${answers.id}</li>
+         <li class="list-group-item">Email: <a href="mailto:{{ email }}">${answers.email}</a></li>
+         <li class="list-group-item">School:${answers.school}/li>
+     </ul>
+ </div>
+</div>`
+   teamArr.push(intern)
+   addEmp();
+
+}
      
- init();
+ function generateHTML(answers) {
+   const team = teamArr.join("")
+   const teamHTML = html.replace("{Placeholder}", team)
+   fs.writeFile("./output/team.html", teamHTML, (err) => {
+     if (err) throw err;
+     console.log("team html created");
+   })
+ };
