@@ -42,5 +42,8 @@ Jest
 <p></p>
  <li><a href="https://github.com/millerbee/" target="_blank">GitHub</a></li>
 <br>
+  
+  ![TeamGen_Test](https://user-images.githubusercontent.com/24216906/96954819-6e772100-14b1-11eb-9ba1-22c81307fee1.JPG)
 
 ![TeamGenerator](https://user-images.githubusercontent.com/24216906/96950815-6666b380-14a8-11eb-979f-e25cfb774cb3.JPG)
+
