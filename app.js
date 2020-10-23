@@ -6,13 +6,14 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const fs = require("fs");
 const teamArr =[];
-const html =`<!DOCTYPE html>
+const html = `<!DOCTYPE html>
 <html lang="en">
 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" type="text/css" href="style.css">
 <title>My Team</title>
 <body>
 <nav class="navbar navbar-light bg-warning text-lg-center">
@@ -53,10 +54,10 @@ function addEmp() {
           choices: ["Manager", "Engineer", "Intern"]
         },
  
-      ]).then(function (data) {    
+      ]).then(function (answers) {    
          
-        console.log(data);
-        if (data.role === "Manager"){
+        console.log(answers);
+        if (answers.role === "Manager"){
           inquirer.prompt([
             {
               type: "input",
@@ -85,7 +86,7 @@ function addEmp() {
          
 
         }else {
-           if(data.role === "Engineer") {
+           if(answers.role === "Engineer") {
             inquirer.prompt([
               {
                 type: "input",
@@ -112,7 +113,7 @@ function addEmp() {
             ]).then(answers => addEngineer(answers));
 
            }else {
-             if(data.role === "Intern") {
+             if(answers.role === "Intern") {
                inquirer.prompt([
                 {
                   type: "input",
@@ -151,16 +152,17 @@ function addEmp() {
     }
 
     function addManager(answers) {
+      
       const manager = `
       <div class="card employee-card">
     <div class="card-header">
-        <h2 class="card-title">${answers.managerName}</h2>
-        <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>{{ role }}</h3>
+        <h2 class="card-title">${answers.name}</h2>
+        <h3 class="card-title"><i class="fas fa-mug-hot mr-2"></i>Manager</h3>
     </div>
     <div class="card-body">
         <ul class="list-group">
             <li class="list-group-item">ID: ${answers.id}</li>
-            <li class="list-group-item">Email: ${answers.email}</li>
+            <li class="list-group-item">Email: <a href="mailto:{{ email }}">${answers.email}</a></li>
             <li class="list-group-item">Office number:${answers.officeNumber}</li>
         </ul>
     </div>
@@ -173,13 +175,13 @@ function addEngineer(answers) {
   const engineer = `
   <div class="card employee-card">
   <div class="card-header">
-      <h2 class="card-title">${answers.engineerName}</h2>
-      <h3 class="card-title"><i class="fas fa-glasses mr-2"></i>{{ role }}</h3>
+      <h2 class="card-title">${answers.name}</h2>
+      <h3 class="card-title"><i class="fas fa-glasses mr-2"></i>Engineer</h3>
   </div>
   <div class="card-body">
       <ul class="list-group">
           <li class="list-group-item">ID:${answers.id}</li>
-          <li class="list-group-item">Email:${answers.email}</li>
+          <li class="list-group-item">Email: <a href="mailto:{{ email }}">${answers.email}</a></li>
           <li class="list-group-item">GitHub: <a href="https://github.com/{{ github }}" target="_blank" rel="noopener noreferrer">${answers.github}</a></li>
       </ul>
   </div>
@@ -193,14 +195,14 @@ function addEngineer(answers) {
 function addIntern(answers) {
  const intern = `<div class="card employee-card">
  <div class="card-header">
-     <h2 class="card-title">${answers.internName}</h2>
-     <h3 class="card-title"><i class="fas fa-user-graduate mr-2"></i>{{ role }}</h3>
+     <h2 class="card-title">${answers.name}</h2>
+     <h3 class="card-title"><i class="fas fa-user-graduate mr-2"></i>Intern</h3>
  </div>
  <div class="card-body">
      <ul class="list-group">
          <li class="list-group-item">ID:${answers.id}</li>
          <li class="list-group-item">Email: <a href="mailto:{{ email }}">${answers.email}</a></li>
-         <li class="list-group-item">School:${answers.school}/li>
+         <li class="list-group-item">School:${answers.school}</li>
      </ul>
  </div>
 </div>`
